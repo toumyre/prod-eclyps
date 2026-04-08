@@ -1,0 +1,71 @@
+:root {
+    --bg-color: #050505;
+    --gold: #d4af37;
+    --white: #ffffff;
+    --grey: #888888;
+    --font-main: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-heading: "Rajdhani", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color-scheme: dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--white);
+    font-family: var(--font-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+#root {
+    min-height: 100vh;
+}
