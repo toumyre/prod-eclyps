@@ -50,9 +50,9 @@ function RosterPage() {
               <div key={player.id} className="player-card">
                 {player.number && <span className="player-number">{player.number}</span>}
                 <div className="player-photo-container">
-                  {player.photoUrl ? (
+                  {player.photo_url ? (
                     <img
-                      src={player.photoUrl}
+                      src={player.photo_url}
                       alt={player.name}
                       className="player-photo"
                       loading="lazy"
