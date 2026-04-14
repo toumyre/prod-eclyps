@@ -443,7 +443,7 @@ main {
 
 .league-info p {
     font-size: 0.85rem;
-    color: var(--grey);
+    color: #c0c0c0;
     line-height: 1.7;
 }
 
@@ -914,7 +914,7 @@ main {
 
 .info-item p {
     font-size: 0.85rem;
-    color: var(--grey);
+    color: #c0c0c0;
     line-height: 1.8;
 }
 
@@ -949,7 +949,7 @@ main {
 
 .discord-banner-text p {
     font-size: 0.85rem;
-    color: var(--grey);
+    color: #c0c0c0;
     line-height: 1.7;
 }
 
