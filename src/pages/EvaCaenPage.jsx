@@ -65,6 +65,14 @@ function EvaCaenPage() {
               >
                 📸 Instagram EVA Caen
               </a>
+              <a
+                href="https://competitive.eva.gg/fr/tournaments/2444249435255949311/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-link"
+              >
+                🏆 EVA Competitive
+              </a>
             </div>
           </div>
 

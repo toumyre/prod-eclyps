@@ -88,9 +88,6 @@ function TeamPage() {
               ) : (
                 <div className="gallery-placeholder">📷</div>
               )}
-              <div className="overlay">
-                <p>{item.title}</p>
-              </div>
             </button>
           ))}
         </div>
