@@ -50,7 +50,7 @@ function EvaCaenPage() {
                 🌐 Site officiel EVA Caen
               </a>
               <a
-                href="https://discord.gg/5DzzyqJ4"
+                href="https://discord.gg/SAwPrfGSYr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-link"
@@ -143,7 +143,7 @@ function EvaCaenPage() {
             </p>
           </div>
           <a
-            href="https://discord.gg/5DzzyqJ4"
+            href="https://discord.gg/SAwPrfGSYr"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-link"
