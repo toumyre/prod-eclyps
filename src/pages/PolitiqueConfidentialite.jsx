@@ -38,8 +38,10 @@ function PolitiqueConfidentialite() {
                             <li>Message libre</li>
                         </ul>
                         <p>
-                            Aucune donnée n&apos;est collectée automatiquement (pas de cookies,
-                            pas de trackers, pas d&apos;analytics).
+                            Des <strong>données de navigation anonymes</strong> (page visitée,
+                            horodatage) sont collectées automatiquement à des fins de statistiques
+                            internes. Aucun cookie n&apos;est déposé et aucune donnée personnelle
+                            n&apos;est associée à ces visites.
                         </p>
                     </div>
 
@@ -68,25 +70,13 @@ function PolitiqueConfidentialite() {
                     </div>
 
                     <div className="legal-section">
-                        <h3>5. Sous-traitants</h3>
+                        <h3>5. Hébergement des données</h3>
                         <p>
-                            Le formulaire de contact utilise le service{" "}
-                            <strong>Formspree</strong> (Formspree Inc., États-Unis) pour la
-                            transmission des messages. Formspree agit en tant que
-                            sous-traitant et est conforme au RGPD.
+                            Les données soumises via le formulaire de contact sont transmises
+                            et stockées sur un serveur auto-hébergé (Raspberry Pi, France),
+                            sans recours à un service tiers. Aucune donnée n&apos;est transmise
+                            en dehors de ce serveur.
                         </p>
-                        <ul>
-                            <li>
-                                Politique de confidentialité Formspree :{" "}
-                                <a
-                                    href="https://formspree.io/legal/privacy-policy"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    formspree.io/legal/privacy-policy
-                                </a>
-                            </li>
-                        </ul>
                     </div>
 
                     <div className="legal-section">

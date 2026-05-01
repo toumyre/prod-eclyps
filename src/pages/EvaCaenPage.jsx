@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import Lightbox from "../components/Lightbox";
-import { evacaenAssets, galleryItems } from "../data/gallery";
+import { evacaenAssets } from "../data/gallery";
 
 function EvaCaenPage() {
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
   const lightboxItems = useMemo(
-    () => galleryItems.filter((item) => item.src),
+    () => evacaenAssets.filter((item) => item.src),
     [],
   );
 

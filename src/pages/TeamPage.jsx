@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import Lightbox from "../components/Lightbox";
-import { galleryItems, videoItems, teamAssets } from "../data/gallery";
+import { videoItems, teamAssets } from "../data/gallery";
 
 function TeamPage() {
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
   const lightboxItems = useMemo(
-    () => galleryItems.filter((item) => item.src),
+    () => teamAssets.filter((item) => item.src),
     [],
   );
 
