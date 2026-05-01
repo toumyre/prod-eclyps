@@ -1,19 +1,54 @@
-# React + Vite
+# prod-eclyps
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Site officiel de l'équipe esport ECLYPS. Consomme l'API FastAPI partagée (`prod-api`) via `site_id = 2`.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** + **JavaScript** + **Vite**
+- **React Router** — navigation SPA
 
-## React Compiler
+## Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+prod-eclyps/
+├── src/
+│   ├── components/   # Composants réutilisables
+│   ├── data/         # Données statiques
+│   ├── media/        # Images et assets média
+│   ├── pages/        # Pages associées aux routes
+│   ├── App.jsx       # Composant racine + routing
+│   └── main.jsx      # Point d'entrée React
+├── public/           # Assets statiques
+├── dist/             # Build de production (committé)
+├── .env.production   # Variables d'environnement de production
+└── deploy.sh         # Script de déploiement
+```
 
-## Expanding the ESLint configuration
+## Démarrage
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+npm run dev      # Serveur de développement (http://localhost:5173)
+npm run build    # Build → dist/
+npm run lint     # ESLint
+npm run preview  # Prévisualisation du build de production
+```
 
+## Variables d'environnement
 
-HEY COUCOU
+```env
+VITE_API_URL=https://api.t-etendard.fr
+```
+
+`.env.production` est committé. `.env.local` et `.env.development` sont ignorés par git.
+
+## Points clés
+
+- Projet en **JavaScript** (contrairement au portfolio en TypeScript).
+- Pas de framework de tests.
+
+## Déploiement
+
+Le `dist/` est committé dans git. Le déploiement consiste en un simple `git pull` sur le serveur, qui sert les fichiers statiques via le conteneur Docker `nginx-static`.
+
+**Production :** `https://eclyps-esport.fr`
