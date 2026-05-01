@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 function Lightbox({ items = [], index = null, onClose, onPrev, onNext }) {
   const current = index !== null ? items[index] : null;
   const [isZoomed, setIsZoomed] = useState(false);
+  const touchStartX = useRef(null);
 
   // Reset zoom when switching images
   useEffect(() => {
@@ -32,12 +33,28 @@ function Lightbox({ items = [], index = null, onClose, onPrev, onNext }) {
       }
     };
 
+    const handleTouchStart = (e) => {
+      touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = (e) => {
+      if (touchStartX.current === null) return;
+      const diff = touchStartX.current - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) {
+        diff > 0 ? onNext() : onPrev();
+      }
+      touchStartX.current = null;
+    };
+
     document.addEventListener("keydown", handleKeyDown);
-    // Prevent body scroll when lightbox is open
+    document.addEventListener("touchstart", handleTouchStart, { passive: true });
+    document.addEventListener("touchend", handleTouchEnd, { passive: true });
     document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchend", handleTouchEnd);
       document.body.style.overflow = "";
     };
   }, [index, onClose, onPrev, onNext]);

@@ -165,7 +165,29 @@ function GalleryPage() {
         <div className="divider"></div>
 
         {loading ? (
-          <div style={{ textAlign: "center", padding: "4rem 0" }}>Chargement...</div>
+          <>
+            <div className="video-section">
+              <h3 className="section-label">🎬 Vidéos</h3>
+              <div className="section-divider"></div>
+              <div className="video-grid">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <div key={i} className="video-card">
+                    <div className="skeleton" style={{ width: "100%", aspectRatio: "16/9", borderRadius: 8 }} />
+                    <div style={{ marginTop: "0.75rem" }}>
+                      <div className="skeleton" style={{ width: "50%", height: 18, borderRadius: 3 }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <h3 className="section-label" style={{ marginTop: "4rem" }}>📸 Photos</h3>
+            <div className="section-divider"></div>
+            <div className="gallery-grid gallery-grid-3col">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <div key={i} className="skeleton" style={{ aspectRatio: "1", borderRadius: 4 }} />
+              ))}
+            </div>
+          </>
         ) : (
           <>
             {/* VIDEOS FIRST */}

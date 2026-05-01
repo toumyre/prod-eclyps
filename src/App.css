@@ -1799,3 +1799,60 @@ main {
         backdrop-filter: blur(2px);
     }
 }
+
+/* ── Skeleton loading ── */
+@keyframes skeleton-pulse {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.6; }
+}
+
+.skeleton {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* ── API error + retry ── */
+.api-error {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--grey);
+}
+
+.api-error p {
+    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+}
+
+.btn-retry {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0.5rem 1.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: background 0.25s ease;
+}
+
+.btn-retry:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+/* ── Form field validation ── */
+.field-error {
+    display: block;
+    color: #ff6b6b;
+    font-size: 0.78rem;
+    margin-top: 5px;
+    letter-spacing: 0.5px;
+}
+
+.form-group input.input-error,
+.form-group textarea.input-error {
+    border-color: rgba(255, 107, 107, 0.6);
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.08);
+}
+}

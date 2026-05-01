@@ -1,15 +1,38 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+const validators = {
+  equipe: (v) => v.trim().length < 2 ? "Le nom de l'équipe est requis." : null,
+  email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? null : "Adresse email invalide.",
+  message: (v) => v.trim().length < 10 ? "Le message est trop court (10 caractères min)." : null,
+};
+
 function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [touched, setTouched] = useState({});
+  const [fieldErrors, setFieldErrors] = useState({});
 
   useEffect(() => {
     document.title = "Contact — ECLYPS";
     return () => { document.title = "ECLYPS — Site officiel"; };
   }, []);
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched((t) => ({ ...t, [name]: true }));
+    if (validators[name]) {
+      setFieldErrors((err) => ({ ...err, [name]: validators[name](value) }));
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (touched[name] && validators[name]) {
+      setFieldErrors((err) => ({ ...err, [name]: validators[name](value) }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,7 +119,13 @@ function ContactPage() {
                     placeholder="Nom de votre équipe"
                     required
                     autoComplete="organization"
+                    className={touched.equipe && fieldErrors.equipe ? "input-error" : ""}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
                   />
+                  {touched.equipe && fieldErrors.equipe && (
+                    <span className="field-error">{fieldErrors.equipe}</span>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -108,7 +137,13 @@ function ContactPage() {
                     placeholder="contact@votreequipe.com"
                     required
                     autoComplete="email"
+                    className={touched.email && fieldErrors.email ? "input-error" : ""}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
                   />
+                  {touched.email && fieldErrors.email && (
+                    <span className="field-error">{fieldErrors.email}</span>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -127,7 +162,13 @@ function ContactPage() {
                     id="message"
                     name="message"
                     placeholder="Disponibilités, arène, infos complémentaires..."
+                    className={touched.message && fieldErrors.message ? "input-error" : ""}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
                   />
+                  {touched.message && fieldErrors.message && (
+                    <span className="field-error">{fieldErrors.message}</span>
+                  )}
                 </div>
 
                 <button type="submit" className="btn-submit" disabled={submitting}>
