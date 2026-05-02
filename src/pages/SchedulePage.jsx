@@ -46,11 +46,29 @@ function MatchCardSkeleton() {
   );
 }
 
+function StandingsSkeleton() {
+  return (
+    <div style={{ marginTop: "3rem" }}>
+      <div className="skeleton" style={{ width: "40%", height: 16, borderRadius: 3, marginBottom: 20 }} />
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 12 }}>
+          <div className="skeleton" style={{ width: 24, height: 16, borderRadius: 3 }} />
+          <div className="skeleton" style={{ width: 32, height: 32, borderRadius: 4 }} />
+          <div className="skeleton" style={{ width: "40%", height: 16, borderRadius: 3 }} />
+          <div className="skeleton" style={{ width: 60, height: 16, borderRadius: 3, marginLeft: "auto" }} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SchedulePage() {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [tab, setTab] = useState("upcoming");
+  const [standings, setStandings] = useState(null);
+  const [standingsLoading, setStandingsLoading] = useState(true);
 
   const fetchMatches = useCallback(() => {
     setLoading(true);
@@ -74,6 +92,10 @@ function SchedulePage() {
   useEffect(() => {
     document.title = "Calendrier — ECLYPS";
     fetchMatches();
+    fetch(`${API_URL}/matches/standings`, { headers: { "x-site-id": "2" } })
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => { setStandings(data); setStandingsLoading(false); })
+      .catch(() => setStandingsLoading(false));
     return () => { document.title = "ECLYPS — Site officiel"; };
   }, [fetchMatches]);
 
@@ -164,6 +186,31 @@ function SchedulePage() {
                 </div>
               );
             })}
+          </div>
+        )}
+        {standingsLoading ? (
+          <StandingsSkeleton />
+        ) : standings?.standings?.length > 0 && (
+          <div style={{ marginTop: "3rem" }}>
+            <h3 className="standings-title">Classement — {standings.tournament_name}</h3>
+            <div className="standings-table">
+              {standings.standings.map((team) => {
+                const isEclyps = team.name.toUpperCase() === "ECLYPS";
+                return (
+                  <div key={team.name} className={`standings-row${isEclyps ? " standings-row--us" : ""}`}>
+                    <span className="standings-rank">#{team.rank}</span>
+                    {team.logo ? (
+                      <img src={team.logo} alt={team.name} className="opponent-logo" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                    ) : (
+                      <span style={{ width: 32 }} />
+                    )}
+                    <span className="standings-name">{team.name}</span>
+                    <span className="standings-record">{team.wins}V {team.losses}D</span>
+                    <span className="standings-pts">{team.points} pts</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>

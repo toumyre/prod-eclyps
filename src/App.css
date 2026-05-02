@@ -1912,6 +1912,29 @@ main {
 .match-status--running   { color: #4caf50; }
 .match-status--pending   { color: var(--gold); }
 
+/* Standings */
+.standings-title { font-family: var(--font-heading); font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; color: var(--grey); margin-bottom: 16px; }
+.standings-table { display: flex; flex-direction: column; gap: 6px; }
+.standings-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.02);
+    transition: background 0.2s;
+}
+.standings-row--us {
+    border-color: rgba(212,175,55,0.4);
+    background: rgba(212,175,55,0.05);
+}
+.standings-rank { font-size: 0.8rem; color: var(--grey); width: 28px; flex-shrink: 0; }
+.standings-name { flex: 1; font-size: 0.9rem; color: var(--white); }
+.standings-row--us .standings-name { color: var(--gold); font-weight: 700; }
+.standings-record { font-size: 0.8rem; color: var(--grey); }
+.standings-pts { font-size: 0.85rem; font-weight: 700; color: var(--white); width: 50px; text-align: right; }
+
 .match-row {
     display: flex;
     align-items: center;
