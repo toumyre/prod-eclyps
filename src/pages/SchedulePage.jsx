@@ -89,15 +89,37 @@ function SchedulePage() {
       });
   }, []);
 
-  useEffect(() => {
-    document.title = "Calendrier — ECLYPS";
-    fetchMatches();
+  const fetchStandings = useCallback(() => {
     fetch(`${API_URL}/matches/standings`, { headers: { "x-site-id": "2" } })
       .then((res) => res.ok ? res.json() : null)
       .then((data) => { setStandings(data); setStandingsLoading(false); })
       .catch(() => setStandingsLoading(false));
-    return () => { document.title = "ECLYPS — Site officiel"; };
-  }, [fetchMatches]);
+  }, []);
+
+  useEffect(() => {
+    document.title = "Calendrier — ECLYPS";
+    fetchMatches();
+    fetchStandings();
+
+    const interval = setInterval(() => {
+      fetchMatches();
+      fetchStandings();
+    }, 5 * 60 * 1000);
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        fetchMatches();
+        fetchStandings();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      document.title = "ECLYPS — Site officiel";
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [fetchMatches, fetchStandings]);
 
   const upcoming = matches.filter((m) => m.status !== "completed");
   const results = matches.filter((m) => m.status === "completed");
