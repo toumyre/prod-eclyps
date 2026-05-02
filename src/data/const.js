@@ -2,6 +2,7 @@ export const navLinks = [
   { to: "/", label: "Accueil" },
   { to: "/team", label: "L'Équipe" },
   { to: "/roster", label: "Roster" },
+  { to: "/calendrier", label: "Calendrier" },
   { to: "/galerie", label: "Galerie" },
   { to: "/eva-caen", label: "EVA Caen" },
   { to: "/contact", label: "Contact" },
