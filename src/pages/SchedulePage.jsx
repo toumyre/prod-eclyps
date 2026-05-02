@@ -107,7 +107,7 @@ function SchedulePage() {
     <section className="page-section">
       <div className="page-wrapper">
         <h2 className="page-title">Calendrier & Résultats</h2>
-        <p className="page-subtitle">JARL League — Saison 2026</p>
+        <p className="page-subtitle">{standings?.tournament_name ?? "JARL League — Saison 2026"}</p>
         <div className="divider"></div>
 
         <div className="schedule-tabs">
@@ -205,7 +205,7 @@ function SchedulePage() {
                       <span style={{ width: 32 }} />
                     )}
                     <span className="standings-name">{team.name}</span>
-                    <span className="standings-record">{team.wins}V {team.losses}D</span>
+                    <span className="standings-record">{team.played} MJ</span>
                     <span className="standings-pts">{team.points} pts</span>
                   </div>
                 );
