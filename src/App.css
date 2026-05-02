@@ -1928,7 +1928,8 @@ main {
 }
 
 .match-team--us       { text-align: right; color: var(--white); }
-.match-team--opponent { text-align: left;  color: var(--grey); }
+.match-team--opponent { text-align: left; color: var(--grey); display: flex; align-items: center; gap: 10px; }
+.opponent-logo { width: 32px; height: 32px; object-fit: contain; border-radius: 4px; flex-shrink: 0; }
 
 .match-center {
     display: flex;

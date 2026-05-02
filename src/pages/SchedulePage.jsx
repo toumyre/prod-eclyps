@@ -145,7 +145,17 @@ function SchedulePage() {
                       )}
                       {match.result && <ResultBadge result={match.result} />}
                     </div>
-                    <span className="match-team match-team--opponent">{match.opponent_name}</span>
+                    <span className="match-team match-team--opponent">
+                      {match.opponent_name}
+                      {match.opponent_logo_url && (
+                        <img
+                          src={match.opponent_logo_url}
+                          alt={match.opponent_name}
+                          className="opponent-logo"
+                          onError={(e) => { e.currentTarget.style.display = "none"; }}
+                        />
+                      )}
+                    </span>
                   </div>
                 </div>
               );
