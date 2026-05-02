@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const ECLYPS_LOGO = "https://competitive.eva.gg/media/file/2448735900902178804/logo_medium";
 
 function formatDate(iso) {
   if (!iso) return null;
@@ -134,7 +135,10 @@ function SchedulePage() {
                     </span>
                   </div>
                   <div className="match-row">
-                    <span className="match-team match-team--us">ECLYPS</span>
+                    <span className="match-team match-team--us">
+                      ECLYPS
+                      <img src={ECLYPS_LOGO} alt="ECLYPS" className="opponent-logo" />
+                    </span>
                     <div className="match-center">
                       {hasScore ? (
                         <span className="match-score">
