@@ -168,7 +168,7 @@ export default function StatsPage() {
                             rel="noopener noreferrer"
                             className="player-eva-link"
                             title="Voir le profil EVA"
-                          >↗</a>
+                          >EVA</a>
                         )}
                       </td>
                       <td>{player.tournaments_played}</td>
@@ -177,10 +177,12 @@ export default function StatsPage() {
                       <td className="col-loss">{player.losses}</td>
                       <td>
                         <div className="winrate-bar-wrapper">
-                          <div
-                            className="winrate-bar"
-                            style={{ width: `${Math.min(player.win_rate, 100)}%` }}
-                          />
+                          <div className="winrate-track">
+                            <div
+                              className="winrate-bar"
+                              style={{ width: `${Math.min(player.win_rate, 100)}%` }}
+                            />
+                          </div>
                           <span className="winrate-label">{player.win_rate.toFixed(0)}%</span>
                         </div>
                       </td>
