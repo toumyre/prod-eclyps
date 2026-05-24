@@ -325,14 +325,160 @@
   color: #ffffff;
 }
 
-/* ── Label de dernière synchro ───────────────────────────────────────────── */
+/* ── Barre actions (synchro + bouton historique) ─────────────────────────── */
+.player-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.75rem 0.6rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.07);
+  margin-top: 0.1rem;
+}
+
 .player-card-sync {
   font-size: 0.58rem;
   color: rgba(212, 175, 55, 0.35);
   letter-spacing: 1.5px !important;
   text-transform: uppercase !important;
-  text-align: right;
-  padding: 0.4rem 0.75rem 0.6rem;
+}
+
+.history-toggle-btn {
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: #888888;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.6rem;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.history-toggle-btn:hover,
+.history-toggle-btn.active {
+  border-color: rgba(212, 175, 55, 0.6);
+  color: #d4af37;
+}
+
+/* ── Panneau historique ──────────────────────────────────────────────────── */
+.history-panel {
+  border-top: 1px solid rgba(212, 175, 55, 0.07);
+  padding: 1rem 1.25rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.history-loading,
+.history-empty {
+  font-size: 0.72rem;
+  color: #888888;
+  text-align: center;
+  padding: 1rem 0;
+  letter-spacing: 1px;
+}
+
+.history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.history-entry {
+  display: flex;
+  gap: 0.75rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+/* Ligne verticale de la timeline */
+.history-entry::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: 0;
+  width: 1px;
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.history-entry:last-child::before { display: none; }
+
+.history-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.3);
+}
+
+.history-content { flex: 1; min-width: 0; }
+
+.history-date {
+  font-size: 0.65rem;
+  color: #888888;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 0.3rem;
+}
+
+.history-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+
+.history-kd {
+  font-size: 0.88rem;
+  font-weight: 700;
+  min-width: 60px;
+}
+
+.history-stat {
+  font-size: 0.75rem;
+  color: #c0c0c0;
+}
+
+.history-deltas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.history-delta-pos {
+  font-size: 0.65rem;
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.07);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 0.1rem 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.history-delta-kd {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  letter-spacing: 0.5px;
+}
+
+.history-delta-kd.pos {
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.07);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.history-delta-kd.neg {
+  color: #888888;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.history-baseline {
+  font-size: 0.6rem;
+  color: rgba(212, 175, 55, 0.3);
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  font-style: italic;
 }
 
 /* ── Sans stats in-game ──────────────────────────────────────────────────── */

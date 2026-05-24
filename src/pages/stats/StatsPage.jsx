@@ -19,7 +19,6 @@ function formatDistance(meters) {
   return `${(meters / 1000).toFixed(1)} km`;
 }
 
-// "il y a 3h" / "il y a 2j" à partir d'une date ISO
 function formatRelativeTime(isoString) {
   if (!isoString) return null;
   const diffMs = Date.now() - new Date(isoString).getTime();
@@ -32,16 +31,22 @@ function formatRelativeTime(isoString) {
   return `il y a ${diffD}j`;
 }
 
+function formatDate(isoString) {
+  if (!isoString) return "—";
+  const d = new Date(isoString);
+  return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+
 // ── Options de tri ────────────────────────────────────────────────────────────
 
 const SORT_OPTIONS = [
-  { value: "kd",     label: "K/D",     get: (p) => p.kd_ratio ?? -1 },
-  { value: "kills",  label: "Kills",   get: (p) => p.kills ?? -1 },
-  { value: "wins",   label: "Victoires circuit", get: (p) => p.wins ?? -1 },
-  { value: "games",  label: "Parties", get: (p) => p.game_count ?? -1 },
+  { value: "kd",    label: "K/D",              get: (p) => p.kd_ratio ?? -1 },
+  { value: "kills", label: "Kills",             get: (p) => p.kills ?? -1 },
+  { value: "wins",  label: "Victoires circuit", get: (p) => p.wins ?? -1 },
+  { value: "games", label: "Parties",           get: (p) => p.game_count ?? -1 },
 ];
 
-// ── Composants ────────────────────────────────────────────────────────────────
+// ── Composants de stats ───────────────────────────────────────────────────────
 
 function StatCard({ label, value, sub, accent }) {
   return (
@@ -55,10 +60,9 @@ function StatCard({ label, value, sub, accent }) {
 
 function KdCircle({ kd }) {
   if (kd == null) return <div className="kd-circle empty">—</div>;
-  // Or (elite) → argent (positif) → gris (négatif) — palette ECLYPS
   const color = kd >= 1.5 ? "#d4af37" : kd >= 1 ? "#c0c0c0" : "#888888";
-  const pct = Math.min(kd / 3, 1); // cercle plein à KD=3
-  const dash = 2 * Math.PI * 38;   // circonférence r=38
+  const pct   = Math.min(kd / 3, 1);
+  const dash  = 2 * Math.PI * 38;
   return (
     <div className="kd-circle">
       <svg viewBox="0 0 100 100">
@@ -80,12 +84,90 @@ function KdCircle({ kd }) {
   );
 }
 
+// ── Panneau historique ────────────────────────────────────────────────────────
+
+function HistoryPanel({ playerId }) {
+  const [snapshots, setSnapshots] = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
+
+  useEffect(() => {
+    fetch(`${API}/eclyps/players/${playerId}/history`, { credentials: "include" })
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(setSnapshots)
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
+  }, [playerId]);
+
+  if (loading) return <div className="history-loading">Chargement…</div>;
+  if (error)   return <div className="history-empty">Impossible de charger l'historique.</div>;
+  if (!snapshots || snapshots.length === 0)
+    return <div className="history-empty">Aucun historique disponible pour l'instant.</div>;
+
+  // On calcule les deltas en comparant snapshot[i] avec snapshot[i+1] (plus ancien)
+  return (
+    <div className="history-panel">
+      <div className="history-timeline">
+        {snapshots.map((snap, i) => {
+          const prev = snapshots[i + 1]; // snapshot plus ancien
+          const deltaGames = prev ? (snap.game_count ?? 0) - (prev.game_count ?? 0) : null;
+          const deltaKills = prev ? (snap.kills ?? 0) - (prev.kills ?? 0) : null;
+          const kdColor    = snap.kd_ratio >= 1.5 ? "#d4af37" : snap.kd_ratio >= 1 ? "#c0c0c0" : "#888888";
+
+          return (
+            <div key={snap.id} className="history-entry">
+              {/* Ligne de temps */}
+              <div className="history-dot" style={{ background: kdColor }} />
+              <div className="history-content">
+                <div className="history-date">{formatDate(snap.snapshot_at)}</div>
+                <div className="history-stats">
+                  {/* K/D */}
+                  <span className="history-kd" style={{ color: kdColor }}>
+                    {snap.kd_ratio?.toFixed(2) ?? "—"} K/D
+                  </span>
+                  {/* Stats brutes */}
+                  <span className="history-stat">{snap.game_count} parties</span>
+                  <span className="history-stat">{snap.kills?.toLocaleString()} kills</span>
+                  <span className="history-stat">{formatTime(snap.game_time)}</span>
+                </div>
+                {/* Deltas (si on a un snapshot précédent) */}
+                {prev && (
+                  <div className="history-deltas">
+                    {deltaGames > 0 && (
+                      <span className="history-delta-pos">+{deltaGames} partie{deltaGames > 1 ? "s" : ""}</span>
+                    )}
+                    {deltaKills > 0 && (
+                      <span className="history-delta-pos">+{deltaKills?.toLocaleString()} kills</span>
+                    )}
+                    {prev.kd_ratio != null && snap.kd_ratio != null && (
+                      <span className={`history-delta-kd ${snap.kd_ratio >= prev.kd_ratio ? "pos" : "neg"}`}>
+                        K/D {prev.kd_ratio.toFixed(2)} → {snap.kd_ratio.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {/* Premier snapshot = baseline */}
+                {!prev && (
+                  <div className="history-baseline">Point de départ (baseline)</div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Card joueur ───────────────────────────────────────────────────────────────
+
 function PlayerCard({ player, isMe }) {
-  const hasIngame = player.kills != null;
-  const appUrl = player.eva_app_username
+  const hasIngame    = player.kills != null;
+  const appUrl       = player.eva_app_username
     ? `https://app.eva.gg/profile/public/${player.eva_app_username}`
     : null;
-  const syncLabel = formatRelativeTime(player.synced_at);
+  const syncLabel    = formatRelativeTime(player.synced_at);
+  const [showHistory, setShowHistory] = useState(false);
 
   return (
     <div className={`player-card ${isMe ? "is-me" : ""}`}>
@@ -111,18 +193,13 @@ function PlayerCard({ player, isMe }) {
       {hasIngame ? (
         <div className="player-card-body">
           <div className="player-card-main">
-            {/* Colonne gauche */}
             <div className="player-main-stats">
               <StatCard label="Parties"     value={player.game_count} />
               <StatCard label="Victoires"   value={player.game_victories} accent />
               <StatCard label="Défaites"    value={player.game_defeats} />
               <StatCard label="Temps de jeu" value={formatTime(player.game_time)} />
             </div>
-
-            {/* KD au centre */}
             <KdCircle kd={player.kd_ratio} />
-
-            {/* Colonne droite */}
             <div className="player-main-stats right">
               <StatCard label="Kills"           value={player.kills?.toLocaleString()} accent />
               <StatCard label="Morts"           value={player.deaths?.toLocaleString()} />
@@ -131,7 +208,6 @@ function PlayerCard({ player, isMe }) {
             </div>
           </div>
 
-          {/* Ligne du bas */}
           <div className="player-card-footer">
             <div className="player-footer-stat">
               <span>Distance totale</span>
@@ -155,13 +231,21 @@ function PlayerCard({ player, isMe }) {
             </div>
           </div>
 
-          {/* Dernière synchronisation */}
-          {syncLabel && (
-            <div className="player-card-sync">Synchro {syncLabel}</div>
-          )}
+          {/* Barre inférieure : synchro + bouton historique */}
+          <div className="player-card-actions">
+            {syncLabel && <span className="player-card-sync">Synchro {syncLabel}</span>}
+            <button
+              className={`history-toggle-btn ${showHistory ? "active" : ""}`}
+              onClick={() => setShowHistory((v) => !v)}
+            >
+              {showHistory ? "Masquer l'historique" : "Voir l'historique"}
+            </button>
+          </div>
+
+          {/* Historique (lazy-loaded au clic) */}
+          {showHistory && <HistoryPanel playerId={player.id} />}
         </div>
       ) : (
-        /* Pas encore de stats in-game */
         <div className="player-card-body no-ingame">
           <div className="player-circuit-stats">
             <StatCard label="Tournois"  value={player.tournaments_played} />
@@ -181,7 +265,7 @@ function PlayerCard({ player, isMe }) {
 // ── Page principale ───────────────────────────────────────────────────────────
 
 export default function StatsPage() {
-  const { user, logout } = useStatsAuth();
+  const { user, logout }        = useStatsAuth();
   const [players, setPlayers]   = useState([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
@@ -195,7 +279,6 @@ export default function StatsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Tri côté client — recalculé uniquement quand players ou sortBy changent
   const sortedPlayers = useMemo(() => {
     const opt = SORT_OPTIONS.find((o) => o.value === sortBy);
     if (!opt) return players;
@@ -204,7 +287,6 @@ export default function StatsPage() {
 
   return (
     <div className="stats-page">
-      {/* Header */}
       <header className="stats-header">
         <div className="stats-header-left">
           <img src="/logo.png" alt="ECLYPS" className="stats-header-logo"
@@ -221,7 +303,6 @@ export default function StatsPage() {
       </header>
 
       <main className="stats-main">
-        {/* Barre de tri */}
         {!loading && !error && players.length > 0 && (
           <div className="stats-sort-bar">
             <span className="stats-sort-label">Trier par</span>
