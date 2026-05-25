@@ -401,6 +401,12 @@ export default function StatsPage() {
   const [sortBy, setSortBy]     = useState("kd");
 
   useEffect(() => {
+    const prev = document.title;
+    document.title = "ECLYPS — Espace équipe";
+    return () => { document.title = prev; };
+  }, []);
+
+  useEffect(() => {
     fetch(`${API}/eclyps/players/`, { credentials: "include" })
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setPlayers)

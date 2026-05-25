@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStatsAuth } from "../../contexts/StatsAuthContext";
 import "./LoginPage.css";
 
 export default function LoginPage() {
   const { login } = useStatsAuth();
+
+  useEffect(() => {
+    const prev = document.title;
+    document.title = "ECLYPS — Connexion";
+    return () => { document.title = prev; };
+  }, []);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
