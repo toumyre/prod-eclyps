@@ -481,6 +481,132 @@
   font-style: italic;
 }
 
+/* ── Groupe de boutons d'action ──────────────────────────────────────────── */
+.player-card-btns {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* ── Tableau des dernières parties ───────────────────────────────────────── */
+.games-panel {
+  border-top: 1px solid rgba(212, 175, 55, 0.07);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0 0 0.5rem;
+  overflow-x: auto;
+}
+
+.games-table-header,
+.games-table-row {
+  display: grid;
+  grid-template-columns: 14% 7% 17% 17% 14% 11% 20%;
+  align-items: center;
+  gap: 0;
+  padding: 0.45rem 1rem;
+}
+
+.games-table-header {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  background: rgba(212, 175, 55, 0.03);
+}
+
+.games-table-header span {
+  font-size: 0.56rem;
+  color: #888888;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  font-weight: 600;
+}
+
+.games-table-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.15s ease;
+}
+
+.games-table-row:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.games-table-row:last-child {
+  border-bottom: none;
+}
+
+/* Coloration de la ligne selon le résultat */
+.games-table-row.win {
+  border-left: 2px solid rgba(212, 175, 55, 0.5);
+}
+
+.games-table-row.loss {
+  border-left: 2px solid rgba(136, 136, 136, 0.3);
+}
+
+/* Mode */
+.games-mode {
+  font-size: 0.68rem;
+  color: #c0c0c0;
+  letter-spacing: 0.5px;
+}
+
+/* Carte */
+.games-map {
+  font-size: 0.7rem;
+  color: #c0c0c0;
+}
+
+/* K/D/A */
+.games-kda {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  font-size: 0.75rem;
+}
+
+.games-kda strong {
+  color: #d4af37;
+  font-weight: 700;
+}
+
+.games-kda-sep {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.65rem;
+}
+
+.games-deaths {
+  color: #888888;
+}
+
+/* Résultat */
+.games-outcome {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+
+.games-outcome.win  { color: #d4af37; }
+.games-outcome.loss { color: #888888; }
+
+/* Durée */
+.games-duration {
+  font-size: 0.68rem;
+  color: #888888;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Date */
+.games-date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.68rem;
+  color: #c0c0c0;
+  font-variant-numeric: tabular-nums;
+}
+
+.games-date small {
+  font-size: 0.58rem;
+  color: #888888;
+}
+
 /* ── Sans stats in-game ──────────────────────────────────────────────────── */
 .no-ingame { padding-bottom: 1.25rem; }
 

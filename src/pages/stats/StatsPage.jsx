@@ -84,7 +84,94 @@ function KdCircle({ kd }) {
   );
 }
 
-// ── Panneau historique ────────────────────────────────────────────────────────
+// ── Traduction des champs EVA ─────────────────────────────────────────────────
+
+function translateOutcome(outcome) {
+  if (!outcome) return "—";
+  if (outcome === "Victory") return "Victoire";
+  if (outcome === "Defeat")  return "Défaite";
+  if (outcome === "Draw")    return "Égalité";
+  return outcome;
+}
+
+function translateMode(mode) {
+  if (!mode) return "—";
+  if (mode === "Domination")   return "Domination";
+  if (mode === "Elimination")  return "Élimination";
+  if (mode === "Team")         return "Équipe";
+  return mode;
+}
+
+function formatDuration(seconds) {
+  if (!seconds) return "—";
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+// ── Table des dernières parties ───────────────────────────────────────────────
+
+function GamesPanel({ playerId, evaUserId }) {
+  const [games, setGames]   = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]   = useState(null);
+
+  useEffect(() => {
+    fetch(`${API}/eclyps/players/${playerId}/games`, { credentials: "include" })
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(setGames)
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
+  }, [playerId]);
+
+  if (loading) return <div className="history-loading">Chargement des parties…</div>;
+  if (error)   return <div className="history-empty">Impossible de charger les parties.</div>;
+  if (!games || games.length === 0)
+    return <div className="history-empty">Aucune partie disponible pour cette saison.</div>;
+
+  return (
+    <div className="games-panel">
+      <div className="games-table-header">
+        <span>Mode</span>
+        <span>Joueurs</span>
+        <span>Carte</span>
+        <span>K / D / A</span>
+        <span>Résultat</span>
+        <span>Durée</span>
+        <span>Date</span>
+      </div>
+      {games.map((g) => {
+        const date = g.date ? new Date(g.date) : null;
+        const isWin  = g.outcome === "Victory";
+        const isLoss = g.outcome === "Defeat";
+        return (
+          <div key={g.id} className={`games-table-row ${isWin ? "win" : isLoss ? "loss" : ""}`}>
+            <span className="games-mode">{translateMode(g.mode)}</span>
+            <span>{g.nb_players ?? "—"}</span>
+            <span className="games-map">{g.map ?? "—"}</span>
+            <span className="games-kda">
+              <strong>{g.kills ?? "—"}</strong>
+              <span className="games-kda-sep">/</span>
+              <span className="games-deaths">{g.deaths ?? "—"}</span>
+              <span className="games-kda-sep">/</span>
+              <span>{g.assists ?? "—"}</span>
+            </span>
+            <span className={`games-outcome ${isWin ? "win" : isLoss ? "loss" : ""}`}>
+              {translateOutcome(g.outcome)}
+            </span>
+            <span className="games-duration">{formatDuration(g.duration)}</span>
+            <span className="games-date">
+              {date ? date.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit" }) : "—"}
+              <small>{date ? date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : ""}</small>
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Panneau historique de progression ────────────────────────────────────────
 
 function HistoryPanel({ playerId }) {
   const [snapshots, setSnapshots] = useState(null);
@@ -163,11 +250,17 @@ function HistoryPanel({ playerId }) {
 
 function PlayerCard({ player, isMe }) {
   const hasIngame    = player.kills != null;
+  const hasGames     = player.eva_app_user_id != null;
   const appUrl       = player.eva_app_username
     ? `https://app.eva.gg/profile/public/${player.eva_app_username}`
     : null;
   const syncLabel    = formatRelativeTime(player.synced_at);
-  const [showHistory, setShowHistory] = useState(false);
+  // "games" | "history" | null
+  const [activePanel, setActivePanel] = useState(null);
+
+  function togglePanel(name) {
+    setActivePanel((v) => (v === name ? null : name));
+  }
 
   return (
     <div className={`player-card ${isMe ? "is-me" : ""}`}>
@@ -231,19 +324,30 @@ function PlayerCard({ player, isMe }) {
             </div>
           </div>
 
-          {/* Barre inférieure : synchro + bouton historique */}
+          {/* Barre inférieure : synchro + boutons de panneau */}
           <div className="player-card-actions">
             {syncLabel && <span className="player-card-sync">Synchro {syncLabel}</span>}
-            <button
-              className={`history-toggle-btn ${showHistory ? "active" : ""}`}
-              onClick={() => setShowHistory((v) => !v)}
-            >
-              {showHistory ? "Masquer l'historique" : "Voir l'historique"}
-            </button>
+            <div className="player-card-btns">
+              {hasGames && (
+                <button
+                  className={`history-toggle-btn ${activePanel === "games" ? "active" : ""}`}
+                  onClick={() => togglePanel("games")}
+                >
+                  Dernières parties
+                </button>
+              )}
+              <button
+                className={`history-toggle-btn ${activePanel === "history" ? "active" : ""}`}
+                onClick={() => togglePanel("history")}
+              >
+                Progression
+              </button>
+            </div>
           </div>
 
-          {/* Historique (lazy-loaded au clic) */}
-          {showHistory && <HistoryPanel playerId={player.id} />}
+          {/* Panneaux (lazy-loaded au clic) */}
+          {activePanel === "games"   && <GamesPanel   playerId={player.id} />}
+          {activePanel === "history" && <HistoryPanel playerId={player.id} />}
         </div>
       ) : (
         <div className="player-card-body no-ingame">
