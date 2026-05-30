@@ -252,9 +252,9 @@ function SchedulePage() {
                   <div key={team.name} className={`standings-row${isEclyps ? " standings-row--us" : ""}`}>
                     <span className="standings-rank">#{team.rank}</span>
                     {team.logo ? (
-                      <img src={team.logo} alt={team.name} className="opponent-logo" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                      <img src={team.logo} alt={team.name} className="opponent-logo" onError={(e) => { e.currentTarget.style.visibility = "hidden"; }} />
                     ) : (
-                      <span style={{ width: 32 }} />
+                      <span style={{ width: 32, height: 32, flexShrink: 0, display: "inline-block" }} />
                     )}
                     <span className="standings-name">{team.name}</span>
                     <span className="standings-record">{team.played} MJ</span>
