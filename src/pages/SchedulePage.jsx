@@ -67,8 +67,9 @@ function SchedulePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [tab, setTab] = useState("upcoming");
-  const [standings, setStandings] = useState(null);
+  const [standingsData, setStandingsData] = useState(null);
   const [standingsLoading, setStandingsLoading] = useState(true);
+  const [selectedSeason, setSelectedSeason] = useState(null);
 
   const fetchMatches = useCallback(() => {
     setLoading(true);
@@ -92,7 +93,13 @@ function SchedulePage() {
   const fetchStandings = useCallback(() => {
     fetch(`${API_URL}/matches/standings`, { headers: { "x-site-id": "2" } })
       .then((res) => res.ok ? res.json() : null)
-      .then((data) => { setStandings(data); setStandingsLoading(false); })
+      .then((data) => {
+        if (data?.seasons) {
+          setStandingsData(data);
+          setSelectedSeason((prev) => prev ?? data.current_season);
+        }
+        setStandingsLoading(false);
+      })
       .catch(() => setStandingsLoading(false));
   }, []);
 
@@ -125,11 +132,14 @@ function SchedulePage() {
   const results = matches.filter((m) => m.status === "completed");
   const displayed = tab === "upcoming" ? upcoming : results;
 
+  const currentSeasonData = standingsData?.seasons?.find((s) => s.label === selectedSeason);
+  const seasons = standingsData?.seasons ?? [];
+
   return (
     <section className="page-section">
       <div className="page-wrapper">
         <h2 className="page-title">Calendrier & Résultats</h2>
-        <p className="page-subtitle">{standings?.tournament_name ?? "JARL League — Saison 2026"}</p>
+        <p className="page-subtitle">JARL League — Saison 2026</p>
         <div className="divider"></div>
 
         <div className="schedule-tabs">
@@ -210,13 +220,33 @@ function SchedulePage() {
             })}
           </div>
         )}
+
         {standingsLoading ? (
           <StandingsSkeleton />
-        ) : standings?.standings?.length > 0 && (
+        ) : currentSeasonData?.standings?.length > 0 && (
           <div style={{ marginTop: "3rem" }}>
-            <h3 className="standings-title">Classement — {standings.tournament_name}</h3>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem", marginBottom: "1rem" }}>
+              <h3 className="standings-title" style={{ margin: 0 }}>
+                Classement — {currentSeasonData.tournament_name}
+              </h3>
+              {seasons.length > 1 && (
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  {seasons.map((s) => (
+                    <button
+                      key={s.label}
+                      type="button"
+                      className={`filter-btn${selectedSeason === s.label ? " active" : ""}`}
+                      style={{ fontSize: "0.75rem", padding: "4px 12px" }}
+                      onClick={() => setSelectedSeason(s.label)}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className="standings-table">
-              {standings.standings.map((team) => {
+              {currentSeasonData.standings.map((team) => {
                 const isEclyps = team.name.toUpperCase() === "ECLYPS";
                 return (
                   <div key={team.name} className={`standings-row${isEclyps ? " standings-row--us" : ""}`}>
